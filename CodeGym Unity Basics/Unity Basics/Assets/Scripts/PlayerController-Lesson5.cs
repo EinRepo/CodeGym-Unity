@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController_Lesson5 : MonoBehaviour
 {
     [SerializeField] private TargetEnum NextTarget;
     [SerializeField] private DriveMode mode = DriveMode.Manual;
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
-    
-    
+    private Rigidbody rb;
 
-    // Update is called once per frame
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
-        if(mode == DriveMode.Automatic)
+        if (mode == DriveMode.Automatic)
         {
             Vector3 targetPosition = GetTargetPosition();
             Vector3 direction = targetPosition - transform.position;
@@ -30,7 +34,7 @@ public class PlayerController : MonoBehaviour
             // Move the player towards the target position
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
         }
-        else if(mode == DriveMode.Manual)
+        else if (mode == DriveMode.Manual)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             float verticalInput = Input.GetAxisRaw("Vertical");
@@ -48,11 +52,11 @@ public class PlayerController : MonoBehaviour
                 transform.Rotate(0, rotation, 0);
 
                 // Move the player in the direction it is moving
-                transform.position += direction * speed * Time.deltaTime;
+                rb.AddForce(direction * speed * Time.deltaTime, ForceMode.Force);
             }
         }
-        
-        
+
+
     }
 
     private Vector3 GetTargetPosition()
